@@ -50,6 +50,7 @@ services:
         required: false
     environment:
       NODE_ENV: production
+      ASTRO_TELEMETRY_DISABLED: "1"
       PORT: 3000
       STRAPI_INTERNAL_URL: http://strapi:1337
       SITE_SOURCE_DIR: /workspace/site-source
