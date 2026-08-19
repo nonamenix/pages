@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "siteId": "pages-live4dev",
+  "profile": "strapi-static-publisher",
+  "workspace": "/Users/legonaut/Projects/live4dev/pages.live4.dev",
+  "publicUrl": "https://pages.live4.dev",
+  "paths": {
+    "stackRoot": "/opt/pages-live4dev",
+    "releaseRoot": "/srv/pages-live4dev",
+    "backupRoot": "/var/backups/pages-live4dev",
+    "runbook": "docs/deployment.md"
+  },
+  "ports": {
+    "strapi": 4351,
+    "publisher": 4352
+  },
+  "deployment": {
+    "keepReleases": 4,
+    "backupRetentionDays": 14
+  },
+  "features": {
+    "draftAndPublish": true,
+    "signedPreview": true,
+    "publicContentApi": false,
+    "mcp": false
+  }
+}

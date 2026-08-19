@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pages.live4.dev/sitemap.xml

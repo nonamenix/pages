@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatPublishedOn, getArticles } from '../lib/articles.mjs';
+
+const articles = await getArticles();
+---
+<BaseLayout>
+  <section class="home-hero shell">
+    <p class="eyebrow">pages.live4.dev</p>
+    <h1>Pages</h1>
+    <p class="home-hero__lead">Статьи, заметки и длинные тексты.</p>
+  </section>
+
+  <section class="article-index shell" aria-labelledby="latest-title">
+    <div class="section-heading">
+      <h2 id="latest-title">Публикации</h2>
+      <span>{articles.length}</span>
+    </div>
+    {articles.length === 0 ? (
+      <div class="empty-state">
+        <p>Пока нет опубликованных статей.</p>
+        <small>Первая страница появится здесь после публикации.</small>
+      </div>
+    ) : (
+      <ol class="article-list">
+        {articles.map((article) => (
+          <li>
+            <article class:list={['article-card', { 'article-card--draft': article.draft }]}>
+              <a href={`/${article.slug}/`} aria-label={`Читать: ${article.title}`}>
+                <div class="article-card__meta">
+                  <time datetime={article.publishedOn}>{formatPublishedOn(article.publishedOn, article.language)}</time>
+                  <span>{article.readingMinutes} мин</span>
+                  {article.draft && <span class="draft-label">Черновик</span>}
+                </div>
+                <h3>{article.title}</h3>
+                <p>{article.excerpt}</p>
+                {article.author && <small>{article.author}</small>}
+              </a>
+            </article>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+</BaseLayout>

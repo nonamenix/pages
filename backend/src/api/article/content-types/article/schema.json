@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "articles",
+  "info": {
+    "singularName": "article",
+    "pluralName": "articles",
+    "displayName": "Статья",
+    "description": "Публичная статья для pages.live4.dev"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 180
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true,
+      "unique": true,
+      "regex": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "excerpt": {
+      "type": "text",
+      "required": true,
+      "minLength": 1,
+      "maxLength": 320
+    },
+    "author": {
+      "type": "string",
+      "maxLength": 180
+    },
+    "publishedOn": {
+      "type": "date",
+      "required": true
+    },
+    "language": {
+      "type": "enumeration",
+      "enum": ["ru", "en"],
+      "default": "ru",
+      "required": true
+    },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": ["images"]
+    },
+    "body": {
+      "type": "blocks",
+      "required": true
+    }
+  }
+}

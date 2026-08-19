@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatPublishedOn, getArticles } from '../lib/articles.mjs';
+import { renderBlocks } from '../lib/blocks.mjs';
+
+export async function getStaticPaths() {
+  return (await getArticles()).map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const canonical = new URL(`${article.slug}/`, Astro.site).href;
+const body = renderBlocks(article.body, {
+  mediaBaseUrl: process.env.MEDIA_PUBLIC_BASE_URL || 'https://pages.live4.dev/uploads',
+});
+const coverAlt = article.cover?.alternativeText || article.title;
+---
+<BaseLayout
+  title={article.title}
+  description={article.excerpt}
+  language={article.language}
+  canonical={canonical}
+  image={article.cover?.url}
+  noindex={article.draft}
+  ogType="article"
+>
+  {article.draft && <div class="draft-banner" role="status">Предпросмотр неопубликованного черновика</div>}
+  <article class="article-page shell--reading">
+    <header class="article-header">
+      <a class="back-link" href="/">← Все публикации</a>
+      <h1>{article.title}</h1>
+      <p class="article-header__excerpt">{article.excerpt}</p>
+      <div class="article-meta">
+        {article.author && <span>{article.author}</span>}
+        <time datetime={article.publishedOn}>{formatPublishedOn(article.publishedOn, article.language)}</time>
+        <span>{article.readingMinutes} мин чтения</span>
+      </div>
+    </header>
+
+    {article.cover && (
+      <figure class="article-cover">
+        <img src={article.cover.url} alt={coverAlt} width={article.cover.width || undefined} height={article.cover.height || undefined} />
+        {article.cover.caption && <figcaption>{article.cover.caption}</figcaption>}
+      </figure>
+    )}
+
+    <div class="article-body" set:html={body} />
+  </article>
+</BaseLayout>

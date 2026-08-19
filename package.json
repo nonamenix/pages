@@ -1,0 +1,22 @@
+{
+  "name": "pages-live4dev",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "build:empty": "PAGES_CONTENT_SOURCE=empty astro build",
+    "build:fixture": "PAGES_CONTENT_SOURCE=fixture astro build",
+    "preview": "astro preview",
+    "test": "node --test tests/*.test.mjs publisher/*.test.mjs",
+    "validate": "npm run test && npm run build:empty && npm run build:fixture && npm --prefix backend run typecheck && npm --prefix backend run build"
+  },
+  "dependencies": {
+    "astro": "6.4.8",
+    "zod": "^4.4.3"
+  },
+  "engines": {
+    "node": ">=22.12.0 <23"
+  }
+}

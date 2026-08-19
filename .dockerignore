@@ -1,0 +1,17 @@
+.git
+.gitignore
+.env
+.astro
+.publisher-output
+.releases
+.tmp
+dist
+node_modules
+backend/node_modules
+backend/build
+backend/dist
+backend/.cache
+backend/.tmp
+backend/public/uploads/*
+*.log
+.DS_Store

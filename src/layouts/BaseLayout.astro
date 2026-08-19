@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  language?: 'ru' | 'en';
+  canonical?: string | null;
+  image?: string | null;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+}
+
+const {
+  title = 'Pages',
+  description = 'Статьи, заметки и длинные тексты.',
+  language = 'ru',
+  canonical = new URL(Astro.url.pathname, Astro.site).href,
+  image = null,
+  noindex = false,
+  ogType = 'website',
+} = Astro.props;
+const documentTitle = title === 'Pages' ? 'Pages — pages.live4.dev' : `${title} — Pages`;
+---
+<!doctype html>
+<html lang={language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f5f0" />
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
+    <title>{documentTitle}</title>
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="Pages" />
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">К содержанию</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Pages — на главную">
+        <span class="brand__mark" aria-hidden="true">P</span>
+        <span>Pages</span>
+      </a>
+    </header>
+    <main id="content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <span>pages.live4.dev</span>
+      <span>Тексты без лишнего шума.</span>
+    </footer>
+  </body>
+</html>

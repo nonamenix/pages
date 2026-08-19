@@ -1,0 +1,70 @@
+pages.live4.dev {
+  encode zstd gzip
+  import /opt/monitoring/caddy/access-log.caddy
+
+  @uploads path /uploads /uploads/*
+  handle @uploads {
+    header X-Content-Type-Options "nosniff"
+    reverse_proxy 127.0.0.1:4351
+  }
+
+  @preview path /__preview /__preview/*
+  handle @preview {
+    header {
+      Content-Security-Policy "default-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+      Cache-Control "no-store"
+      X-Robots-Tag "noindex, nofollow, noarchive"
+    }
+    reverse_proxy 127.0.0.1:4352
+  }
+
+  @admin path /admin /admin/* /content-manager /content-manager/* /content-type-builder /content-type-builder/* /content-releases /content-releases/* /email /email/* /i18n /i18n/* /review-workflows /review-workflows/* /upload /upload/* /users-permissions /users-permissions/*
+  handle @admin {
+    request_body {
+      max_size 11MB
+    }
+    header {
+      Cache-Control "no-store"
+      X-Robots-Tag "noindex, nofollow, noarchive"
+    }
+    reverse_proxy 127.0.0.1:4351
+  }
+
+  @health path /_health /_health/*
+  handle @health {
+    respond 404
+  }
+
+  @api path /api /api/*
+  handle @api {
+    respond 404
+  }
+
+  @mcp path /mcp /mcp/*
+  handle @mcp {
+    respond 404
+  }
+
+  handle {
+    root * /srv/pages-live4dev/current
+    header Content-Security-Policy "default-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'; upgrade-insecure-requests"
+    try_files {path} {path}/index.html
+    file_server
+  }
+
+  handle_errors 404 {
+    root * /srv/pages-live4dev/current
+    rewrite * /404.html
+    header Content-Security-Policy "default-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+    file_server
+  }
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    -Server
+  }
+}

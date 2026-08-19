@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "siteId": "pages-live4dev",
+  "generatedAt": "2026-08-19T00:00:00.000Z",
+  "data": [
+    {
+      "slug": "fixture-article",
+      "title": "Статья для проверки сборки",
+      "excerpt": "Опубликованный fixture проверяет маршруты, метаданные и Blocks-рендерер без подключения к Strapi.",
+      "author": "Pages",
+      "publishedOn": "2026-08-19",
+      "language": "ru",
+      "cover": null,
+      "body": [
+        { "type": "paragraph", "children": [{ "type": "text", "text": "Это тестовая статья с " }, { "type": "text", "text": "выделенным текстом", "bold": true }, { "type": "text", "text": "." }] },
+        { "type": "heading", "level": 2, "children": [{ "type": "text", "text": "Подзаголовок" }] },
+        { "type": "quote", "children": [{ "type": "text", "text": "Сборка должна быть предсказуемой." }] },
+        { "type": "list", "format": "unordered", "children": [{ "type": "list-item", "children": [{ "type": "text", "text": "Один пункт" }] }, { "type": "list-item", "children": [{ "type": "text", "text": "Другой пункт" }] }] }
+      ],
+      "updatedAt": "2026-08-19T00:00:00.000Z",
+      "draft": false
+    }
+  ]
+}

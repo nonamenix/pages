@@ -1,0 +1,78 @@
+name: pages-live4dev
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  strapi:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 1337
+      DATABASE_CLIENT: sqlite
+      DATABASE_FILENAME: /opt/app/database/data.db
+      PUBLIC_URL: ${PUBLIC_URL:-http://127.0.0.1:4351}
+      SITE_URL: ${SITE_URL:-https://pages.live4.dev}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://127.0.0.1:8095,http://localhost:4321}
+      STRAPI_MCP_ENABLED: "false"
+      SEED_VERIFICATION_DRAFT: ${SEED_VERIFICATION_DRAFT:-true}
+      PUBLISHER_URL: http://publisher:3000/publish
+    ports:
+      - "127.0.0.1:4351:1337"
+    volumes:
+      - strapi_database:/opt/app/database
+      - strapi_uploads:/opt/app/public/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:1337/_health"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+    logging: *default-logging
+
+  publisher:
+    build:
+      context: .
+      dockerfile: publisher/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      STRAPI_INTERNAL_URL: http://strapi:1337
+      SITE_SOURCE_DIR: /workspace/site-source
+      SITE_OUTPUT_DIR: /srv/pages-live4dev
+      SITE_ID: pages-live4dev
+      SITE_URL: ${SITE_URL:-https://pages.live4.dev}
+      MEDIA_PUBLIC_BASE_URL: ${MEDIA_PUBLIC_BASE_URL:-https://pages.live4.dev/uploads}
+      SOURCE_COMMIT: ${SOURCE_COMMIT:-unknown}
+      KEEP_RELEASES: 4
+    ports:
+      - "127.0.0.1:4352:3000"
+    volumes:
+      - ${PAGES_RELEASES_DIR:-./.releases}:/srv/pages-live4dev
+    depends_on:
+      strapi:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    logging: *default-logging
+
+volumes:
+  strapi_database:
+  strapi_uploads:

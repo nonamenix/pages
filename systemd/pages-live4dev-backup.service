@@ -1,0 +1,8 @@
+[Unit]
+Description=Verified PostgreSQL and uploads backup for pages.live4.dev
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/pages-live4dev/scripts/backup.sh
