@@ -18,6 +18,11 @@
     "keepReleases": 4,
     "backupRetentionDays": 14
   },
+  "analytics": {
+    "provider": "yandex-metrika",
+    "counterId": 111762995,
+    "publicPagesOnly": true
+  },
   "features": {
     "draftAndPublish": true,
     "signedPreview": true,

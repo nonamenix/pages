@@ -123,6 +123,15 @@ const walkFiles = async (root) => {
 
 const reservedSlugs = new Set(['admin', 'api', 'uploads', '__preview', '_health', 'mcp']);
 const containsPrivateValue = (html) => (strapiUrl && html.includes(strapiUrl)) || (strapiApiToken && html.includes(strapiApiToken));
+const validateMetrikaVisibility = (html, expected, route) => {
+  const markers = [
+    html.includes('<script src="/metrika.js" defer></script>'),
+    html.includes('https://mc.yandex.ru/watch/111762995'),
+  ];
+  if (markers.some(Boolean) !== markers.every(Boolean) || markers.every(Boolean) !== expected) {
+    throw new Error(`Invalid Yandex Metrika visibility in ${route}`);
+  }
+};
 
 const validateHtmlAssets = async (releaseRoot, html, route) => {
   const references = [...html.matchAll(/(?:src|href)="(\/[^"]+)"/g)].map((match) => match[1].split(/[?#]/, 1)[0]);
@@ -135,8 +144,12 @@ const validateHtmlAssets = async (releaseRoot, html, route) => {
 };
 
 export const validateRelease = async (releaseRoot, articles) => {
-  const requiredFiles = ['index.html', '404.html', 'sitemap.xml', 'robots.txt'];
+  const requiredFiles = ['index.html', '404.html', 'sitemap.xml', 'robots.txt', 'metrika.js'];
   for (const filename of requiredFiles) await fs.access(path.join(releaseRoot, filename));
+  const metrika = await fs.readFile(path.join(releaseRoot, 'metrika.js'), 'utf8');
+  if (!metrika.includes("https://mc.yandex.ru/metrika/tag.js?id=111762995") || !metrika.includes("ym(111762995, 'init'")) {
+    throw new Error('Invalid Yandex Metrika counter asset');
+  }
 
   const entries = await fs.readdir(releaseRoot, { withFileTypes: true });
   const generatedSlugs = entries
@@ -159,6 +172,7 @@ export const validateRelease = async (releaseRoot, articles) => {
     if ((html.match(/<h1\b/gi) || []).length !== 1) throw new Error(`Invalid h1 count for ${article.slug}`);
     if (containsPrivateValue(html)) throw new Error(`Private data leaked into ${article.slug}`);
     if (!article.draft && html.includes('draft-banner')) throw new Error(`Draft marker leaked into ${article.slug}`);
+    validateMetrikaVisibility(html, !article.draft, `/${article.slug}/`);
     const sitemapHasRoute = sitemap.includes(`<loc>${siteUrl}/${article.slug}/</loc>`);
     if (sitemapHasRoute === article.draft) throw new Error(`Invalid sitemap visibility for ${article.slug}`);
     await validateHtmlAssets(releaseRoot, html, `/${article.slug}/`);
@@ -167,6 +181,7 @@ export const validateRelease = async (releaseRoot, articles) => {
   for (const filename of ['index.html', '404.html']) {
     const html = await fs.readFile(path.join(releaseRoot, filename), 'utf8');
     if (containsPrivateValue(html)) throw new Error(`Private data leaked into ${filename}`);
+    validateMetrikaVisibility(html, filename === 'index.html', `/${filename}`);
     await validateHtmlAssets(releaseRoot, html, `/${filename}`);
   }
 

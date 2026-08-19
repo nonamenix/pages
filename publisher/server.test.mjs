@@ -37,14 +37,16 @@ test('secret comparison fails closed for empty and different values', () => {
 test('release validation accepts root article routes and rejects reserved routes', async () => {
   const root = await fs.mkdtemp(path.join(process.cwd(), '.publisher-test-'));
   const article = { slug: 'test', draft: false };
+  const metrikaMarkup = '<script src="/metrika.js" defer></script><noscript><img src="https://mc.yandex.ru/watch/111762995" alt=""></noscript>';
   try {
     await fs.mkdir(path.join(root, 'test'));
     await fs.writeFile(path.join(root, 'favicon.svg'), '<svg/>');
+    await fs.writeFile(path.join(root, 'metrika.js'), "https://mc.yandex.ru/metrika/tag.js?id=111762995; ym(111762995, 'init');");
     await fs.writeFile(path.join(root, 'robots.txt'), 'User-agent: *');
     await fs.writeFile(path.join(root, 'sitemap.xml'), '<urlset><url><loc>https://pages.live4.dev/test/</loc></url></urlset>');
-    await fs.writeFile(path.join(root, 'index.html'), '<html><head><link rel="icon" href="/favicon.svg"></head><body><h1>Pages</h1></body></html>');
+    await fs.writeFile(path.join(root, 'index.html'), `<html><head><link rel="icon" href="/favicon.svg">${metrikaMarkup}</head><body><h1>Pages</h1></body></html>`);
     await fs.writeFile(path.join(root, '404.html'), '<html><head><link rel="icon" href="/favicon.svg"></head><body><h1>404</h1></body></html>');
-    await fs.writeFile(path.join(root, 'test', 'index.html'), '<html><head><link rel="canonical" href="https://pages.live4.dev/test/"><link rel="icon" href="/favicon.svg"></head><body><h1>Test</h1></body></html>');
+    await fs.writeFile(path.join(root, 'test', 'index.html'), `<html><head><link rel="canonical" href="https://pages.live4.dev/test/"><link rel="icon" href="/favicon.svg">${metrikaMarkup}</head><body><h1>Test</h1></body></html>`);
     const metrics = await validateRelease(root, [article]);
     assert.equal(metrics.routeCount, 3);
 

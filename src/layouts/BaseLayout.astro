@@ -41,8 +41,16 @@ const documentTitle = title === 'Pages' ? 'Pages — pages.live4.dev' : `${title
     {canonical && <meta property="og:url" content={canonical} />}
     {image && <meta property="og:image" content={image} />}
     <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    {!noindex && <script is:inline src="/metrika.js" defer></script>}
   </head>
   <body>
+    {!noindex && (
+      <noscript>
+        <div class="metrika-noscript" aria-hidden="true">
+          <img src="https://mc.yandex.ru/watch/111762995" width="1" height="1" alt="" />
+        </div>
+      </noscript>
+    )}
     <a class="skip-link" href="#content">К содержанию</a>
     <header class="site-header">
       <a class="brand" href="/" aria-label="Pages — на главную">
