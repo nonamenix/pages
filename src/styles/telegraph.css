@@ -17,6 +17,24 @@
 .page-nav a { text-decoration: none; }
 .page-nav a:first-child { margin-right: auto; }
 .page-nav a:hover { color: #000; }
+.home-nav .telegraph-button { font-size: 14px; line-height: 18px; }
+.home-lead { margin: 0 21px; font: 400 18px/1.58 var(--serif); color: var(--ink); }
+.home-publications { margin: 36px 21px 0; }
+.home-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid #e4e4e4; }
+.home-section-heading h2 { margin: 0; font: 700 18px/22px var(--sans); }
+.home-section-heading > span { font: 300 15px/18px var(--sans); color: var(--ink-soft); }
+.home-article-list { list-style: none; margin: 0; padding: 0; }
+.home-article-list > li { border-bottom: 1px solid #e4e4e4; }
+.home-article { padding: 21px 0 24px; }
+.home-article a { display: block; text-decoration: none; }
+.home-article h3 { margin: 0 0 9px; font: 700 24px/28px var(--sans); color: #000; overflow-wrap: anywhere; }
+.home-article a:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.home-article-meta { display: flex; flex-wrap: wrap; font: 300 15px/18px var(--sans); color: var(--ink-soft); }
+.home-article-meta > * + *::before { content: '•'; padding: 0 7px; }
+.home-article p { margin: 12px 0 0; font: 400 18px/1.58 var(--serif); overflow-wrap: anywhere; }
+.home-empty { padding-top: 21px; }
+.home-empty p { margin: 0 0 9px; font: 400 18px/1.58 var(--serif); }
+.home-empty .home-empty-hint { font: 300 15px/22px var(--sans); color: var(--ink-soft); }
 .telegraph-header.article-header { margin: 0 0 20px; }
 .telegraph-header h1, .new-page-placeholder h1, .editor-title {
   font: 700 32px/34px var(--sans);

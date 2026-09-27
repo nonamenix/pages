@@ -1,46 +1,53 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatPublishedOn, getArticles } from '../lib/articles.mjs';
+import '../styles/telegraph.css';
 
 const articles = await getArticles();
 ---
-<BaseLayout>
-  <section class="home-hero shell" data-pages-root data-mode="home">
-    <p class="eyebrow">pages.live4.dev</p>
-    <h1>Pages</h1>
-    <p class="home-hero__lead">Статьи, заметки и длинные тексты.</p>
-  </section>
+<BaseLayout telegraph>
+  <section class="telegraph-page home-page" data-pages-root data-mode="home">
+    <nav class="page-nav home-nav" aria-label="Управление страницами">
+      <a href="/" aria-label="Pages — на главную">pages.live4.dev</a>
+      <a class="telegraph-button" href="/new" data-create hidden>Новая страница</a>
+      <a href="/admin/auth/login" data-login target="_blank" rel="noopener">Войти</a>
+    </nav>
+    <header class="telegraph-header home-intro">
+      <h1>Pages</h1>
+      <p class="home-lead">Статьи, заметки и длинные тексты.</p>
+    </header>
 
-  <section class="article-index shell" aria-labelledby="latest-title">
-    <div class="section-heading">
-      <h2 id="latest-title">Публикации</h2>
-      <span>{articles.length}</span>
-    </div>
-    {articles.length === 0 ? (
-      <div class="empty-state">
-        <p>Пока нет опубликованных статей.</p>
-        <small>Первая страница появится здесь после публикации.</small>
+    <section class="home-publications" aria-labelledby="latest-title">
+      <div class="home-section-heading">
+        <h2 id="latest-title">Публикации</h2>
+        <span aria-label="Количество публикаций">{articles.length}</span>
       </div>
-    ) : (
-      <ol class="article-list">
-        {articles.map((article) => (
-          <li>
-            <article class:list={['article-card', { 'article-card--draft': article.draft }]}>
-              <a href={`/${article.slug}/`} aria-label={`Читать: ${article.title}`}>
-                <div class="article-card__meta">
-                  <time datetime={article.publishedOn}>{formatPublishedOn(article.publishedOn, article.language)}</time>
-                  <span>{article.readingMinutes} мин</span>
-                  {article.draft && <span class="draft-label">Черновик</span>}
-                </div>
-                <h3>{article.title}</h3>
-                <p>{article.excerpt}</p>
-                {article.author && <small>{article.author}</small>}
-              </a>
-            </article>
-          </li>
-        ))}
-      </ol>
-    )}
+      {articles.length === 0 ? (
+        <div class="home-empty">
+          <p>Пока нет опубликованных статей.</p>
+          <p class="home-empty-hint">Первая страница появится здесь после публикации.</p>
+        </div>
+      ) : (
+        <ol class="home-article-list">
+          {articles.map((article) => (
+            <li>
+              <article class="home-article">
+                <a href={`/${article.slug}/`} aria-label={`Читать: ${article.title}`}>
+                  <h3>{article.title}</h3>
+                  <div class="home-article-meta">
+                    {article.author && <span>{article.author}</span>}
+                    <time datetime={article.publishedOn}>{formatPublishedOn(article.publishedOn, article.language)}</time>
+                    <span>{article.readingMinutes} мин</span>
+                    {article.draft && <span>Черновик</span>}
+                  </div>
+                  <p>{article.excerpt}</p>
+                </a>
+              </article>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   </section>
 </BaseLayout>
 <script>import '../scripts/pages.mjs';</script>
