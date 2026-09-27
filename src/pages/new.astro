@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EditorShell from '../components/EditorShell.astro';
+---
+<BaseLayout title="Новая страница" noindex canonical={null} telegraph>
+  <section class="telegraph-page" data-pages-root data-mode="new">
+    <nav class="page-nav" aria-label="Навигация">
+      <a href="/">← Pages</a>
+      <a data-login href="/admin/auth/login" target="_blank" rel="noopener">Войти</a>
+    </nav>
+    <div data-read-view class="new-page-placeholder">
+      <h1>Новая страница</h1>
+      <p class="session-status" data-session-status role="status">Проверяем вход…</p>
+    </div>
+    <div data-editor-host></div>
+    <EditorShell />
+    <noscript><p class="session-status">Для редактора нужно включить JavaScript.</p></noscript>
+  </section>
+</BaseLayout>
+<script>import '../scripts/pages.mjs';</script>

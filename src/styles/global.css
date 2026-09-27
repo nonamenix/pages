@@ -29,6 +29,8 @@ button, input, textarea, select { font: inherit; }
 .site-header { display: flex; width: min(100% - 48px, 1040px); min-height: 84px; margin-inline: auto; align-items: center; border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; align-items: center; gap: .7rem; color: var(--ink); font-size: .82rem; font-weight: 720; letter-spacing: .12em; text-decoration: none; text-transform: uppercase; }
 .brand__mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; background: var(--ink); color: var(--paper); font: 700 1.15rem/1 var(--serif); letter-spacing: 0; }
+.site-account { margin-left: auto; display: flex; gap: 20px; font-size: .8rem; color: var(--ink-soft); }
+.site-account a { text-decoration: none; }
 .site-footer { display: flex; width: min(100% - 48px, 1040px); min-height: 130px; margin: 7rem auto 0; align-items: center; justify-content: space-between; gap: 2rem; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: .75rem; }
 
 .eyebrow { margin: 0 0 1.25rem; color: var(--accent); font-size: .72rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }

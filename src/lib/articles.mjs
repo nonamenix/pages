@@ -3,7 +3,7 @@ import { mediaUrl, readingMinutes } from './blocks.mjs';
 
 const SITE_ID = 'pages-live4dev';
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const reservedSlugs = new Set(['admin', 'api', 'uploads', '__preview', '_health', 'mcp']);
+const reservedSlugs = new Set(['admin', 'api', 'uploads', '__preview', '_health', 'mcp', 'new', 'fonts']);
 let contentPromise;
 
 const requiredString = (value, field, maxLength) => {

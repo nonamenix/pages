@@ -1,0 +1,60 @@
+---
+import '../styles/telegraph.css';
+---
+<template data-editor-template>
+  <section class="pages-editor ym-hide-content" aria-label="Редактор страницы">
+    <header class="editor-header">
+      <textarea class="editor-title ym-disable-keys" data-title rows="1" maxlength="180" placeholder="Заголовок" aria-label="Заголовок"></textarea>
+      <input class="editor-author ym-disable-keys" data-author maxlength="180" placeholder="Ваше имя" aria-label="Автор" autocomplete="name" />
+    </header>
+    <div class="article-body editor-body" data-body></div>
+    <button class="insert-image" data-insert-image type="button" title="Добавить изображение" aria-label="Добавить изображение" hidden>+</button>
+    <aside class="page-actions editor-actions" aria-label="Действия со страницей">
+      <button class="telegraph-button" data-publish type="button">Опубликовать</button>
+      <button class="quiet-button" data-save type="button">Сохранить черновик</button>
+      <button class="quiet-button" data-cancel type="button">Отмена</button>
+      <a class="quiet-button" data-relogin href="/admin/auth/login" target="_blank" rel="noopener" hidden>Войти</a>
+      <p class="editor-status" data-status role="status" aria-live="polite"></p>
+      <a class="quiet-button" data-public-link hidden>Открыть статью ↗</a>
+      <button class="quiet-button" data-check-public type="button" hidden>Проверить публикацию</button>
+    </aside>
+    <div class="format-menu" data-format-menu role="toolbar" aria-label="Форматирование текста" hidden>
+      <button type="button" data-format="bold" aria-label="Жирный" title="Жирный (⌘/Ctrl+B)"><b>B</b></button>
+      <button type="button" data-format="italic" aria-label="Курсив" title="Курсив (⌘/Ctrl+I)"><i>i</i></button>
+      <button type="button" data-format="link" aria-label="Ссылка" title="Ссылка">↗</button>
+      <span class="format-divider" aria-hidden="true"></span>
+      <button type="button" data-format="heading" aria-label="Заголовок раздела" title="Заголовок раздела">H</button>
+      <button type="button" data-format="subheading" aria-label="Подзаголовок" title="Подзаголовок">h</button>
+      <button type="button" data-format="quote" aria-label="Цитата" title="Цитата">❞</button>
+      <button type="button" data-format="bullet" aria-label="Маркированный список" title="Маркированный список">≡</button>
+      <button type="button" data-format="ordered" aria-label="Нумерованный список" title="Нумерованный список">1.</button>
+    </div>
+    <dialog class="editor-dialog" data-link-dialog>
+      <form method="dialog">
+        <label for="pages-link">Адрес ссылки</label>
+        <input id="pages-link" data-link-url type="text" placeholder="https://" required />
+        <p data-dialog-error role="alert"></p>
+        <div class="dialog-actions">
+          <button class="quiet-button" type="button" data-remove-link>Убрать ссылку</button>
+          <button class="quiet-button" value="cancel" formnovalidate>Отмена</button>
+          <button class="telegraph-button" type="submit" value="save">Добавить</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog class="editor-dialog" data-image-dialog>
+      <form method="dialog">
+        <label for="pages-image">Изображение</label>
+        <input id="pages-image" data-image-file type="file" accept="image/jpeg,image/png,image/webp,image/avif" required />
+        <label for="pages-image-alt">Что изображено на картинке?</label>
+        <input id="pages-image-alt" data-image-alt type="text" maxlength="320" required />
+        <label for="pages-image-caption">Подпись, если нужна</label>
+        <input id="pages-image-caption" data-image-caption type="text" maxlength="320" />
+        <p data-dialog-error role="alert"></p>
+        <div class="dialog-actions">
+          <button class="quiet-button" value="cancel" formnovalidate>Отмена</button>
+          <button class="telegraph-button" type="submit" value="save">Добавить</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
+</template>

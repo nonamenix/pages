@@ -18,6 +18,17 @@ pages.live4.dev {
     reverse_proxy 127.0.0.1:4352
   }
 
+  @session_bridge path /admin/pages-session.html
+  handle @session_bridge {
+    header {
+      Cache-Control "no-store"
+      X-Robots-Tag "noindex, nofollow, noarchive"
+      >X-Frame-Options "SAMEORIGIN"
+      >Content-Security-Policy "default-src 'self'; script-src 'self'; connect-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'"
+    }
+    reverse_proxy 127.0.0.1:4351
+  }
+
   @admin path /admin /admin/* /content-manager /content-manager/* /content-type-builder /content-type-builder/* /content-releases /content-releases/* /email /email/* /i18n /i18n/* /review-workflows /review-workflows/* /upload /upload/* /users-permissions /users-permissions/*
   handle @admin {
     request_body {
@@ -60,7 +71,9 @@ pages.live4.dev {
 
   handle {
     root * /srv/pages-live4dev/current
-    header Content-Security-Policy "default-src 'self'; script-src 'self' https://mc.yandex.ru https://yastatic.net; connect-src 'self' https://mc.yandex.ru wss://mc.yandex.ru https://mc.webvisor.com https://mc.webvisor.org wss://mc.webvisor.com wss://mc.webvisor.org; style-src 'self'; img-src 'self' data: https://mc.yandex.ru https://mc.webvisor.com https://mc.webvisor.org https://yastatic.net; child-src blob: https://mc.yandex.ru; frame-src blob: https://mc.yandex.ru; object-src 'none'; base-uri 'none'; frame-ancestors 'self' https://metrika.yandex.ru https://analytics.yandex.ru https://metr.yandex.ru https://metrica.yandex.ru https://metrika.ya.ru; form-action 'none'; upgrade-insecure-requests"
+    header Content-Security-Policy "default-src 'self'; script-src 'self' https://mc.yandex.ru https://yastatic.net; connect-src 'self' https://mc.yandex.ru wss://mc.yandex.ru https://mc.webvisor.com https://mc.webvisor.org wss://mc.webvisor.com wss://mc.webvisor.org; style-src 'self'; img-src 'self' data: https://mc.yandex.ru https://mc.webvisor.com https://mc.webvisor.org https://yastatic.net; child-src 'self' blob: https://mc.yandex.ru; frame-src 'self' blob: https://mc.yandex.ru; object-src 'none'; base-uri 'none'; frame-ancestors 'self' https://metrika.yandex.ru https://analytics.yandex.ru https://metr.yandex.ru https://metrica.yandex.ru https://metrika.ya.ru; form-action 'none'; upgrade-insecure-requests"
+    @new_page path /new
+    rewrite @new_page /new/index.html
     try_files {path} {path}/index.html
     file_server
   }

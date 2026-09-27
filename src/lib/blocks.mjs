@@ -47,7 +47,7 @@ export const mediaUrl = (rawUrl, mediaBaseUrl = 'https://pages.live4.dev/uploads
 
 const renderText = (node) => {
   if (typeof node.text !== 'string') throw new Error('Text node is missing text');
-  let html = escapeHtml(node.text);
+  let html = escapeHtml(node.text).replaceAll('\n', '<br>');
   if (node.code) html = `<code>${html}</code>`;
   if (node.bold) html = `<strong>${html}</strong>`;
   if (node.italic) html = `<em>${html}</em>`;
@@ -119,7 +119,14 @@ const renderBlock = (node, options) => {
       if (!Array.isArray(node.children)) throw new Error('List children must be an array');
       const tag = node.format === 'ordered' ? 'ol' : node.format === 'unordered' ? 'ul' : null;
       if (!tag) throw new Error(`Unsupported list format: ${String(node.format)}`);
-      return `<${tag}>${node.children.map((child) => renderListItem(child, options)).join('')}</${tag}>`;
+      const items = [];
+      for (const child of node.children) {
+        if (child?.type === 'list') {
+          if (!items.length) items.push('<li></li>');
+          items[items.length - 1] = items.at(-1).replace(/<\/li>$/, `${renderBlock(child, options)}</li>`);
+        } else items.push(renderListItem(child, options));
+      }
+      return `<${tag}>${items.join('')}</${tag}>`;
     }
     case 'image':
       return renderImage(node, options);

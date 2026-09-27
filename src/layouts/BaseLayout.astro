@@ -9,6 +9,7 @@ interface Props {
   image?: string | null;
   noindex?: boolean;
   ogType?: 'website' | 'article';
+  telegraph?: boolean;
 }
 
 const {
@@ -19,6 +20,7 @@ const {
   image = null,
   noindex = false,
   ogType = 'website',
+  telegraph = false,
 } = Astro.props;
 const documentTitle = title === 'Pages' ? 'Pages — pages.live4.dev' : `${title} — Pages`;
 ---
@@ -28,7 +30,7 @@ const documentTitle = title === 'Pages' ? 'Pages — pages.live4.dev' : `${title
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f7f5f0" />
+    <meta name="theme-color" content={telegraph ? '#ffffff' : '#f7f5f0'} />
     {noindex && <meta name="robots" content="noindex, nofollow, noarchive" />}
     <title>{documentTitle}</title>
     {canonical && <link rel="canonical" href={canonical} />}
@@ -43,7 +45,7 @@ const documentTitle = title === 'Pages' ? 'Pages — pages.live4.dev' : `${title
     <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
     {!noindex && <script is:inline src="/metrika.js" defer></script>}
   </head>
-  <body>
+  <body class:list={{ 'telegraph-layout': telegraph }}>
     {!noindex && (
       <noscript>
         <div class="metrika-noscript" aria-hidden="true">
@@ -52,18 +54,22 @@ const documentTitle = title === 'Pages' ? 'Pages — pages.live4.dev' : `${title
       </noscript>
     )}
     <a class="skip-link" href="#content">К содержанию</a>
-    <header class="site-header">
+    {!telegraph && <header class="site-header">
       <a class="brand" href="/" aria-label="Pages — на главную">
         <span class="brand__mark" aria-hidden="true">P</span>
         <span>Pages</span>
       </a>
-    </header>
+      <nav class="site-account" aria-label="Управление страницами">
+        <a href="/new" data-create hidden>Новая страница</a>
+        <a href="/admin/auth/login" data-login target="_blank" rel="noopener">Войти</a>
+      </nav>
+    </header>}
     <main id="content">
       <slot />
     </main>
-    <footer class="site-footer">
+    {!telegraph && <footer class="site-footer">
       <span>pages.live4.dev</span>
       <span>Тексты без лишнего шума.</span>
-    </footer>
+    </footer>}
   </body>
 </html>

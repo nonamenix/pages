@@ -1,4 +1,5 @@
 import { seedVerificationArticle } from "./bootstrap/seed-verification-article";
+import { errors } from '@strapi/utils';
 
 const publishModels = ["api::article.article", "plugin::upload.file"];
 let publishTimer: NodeJS.Timeout | null = null;
@@ -24,6 +25,15 @@ const requestPublish = (strapi: any) => {
 
 export default {
   register({ strapi }) {
+    strapi.db.lifecycles.subscribe({
+      models: ['api::article.article'],
+      beforeCreate(event) {
+        if (['new', 'fonts'].includes(event.params.data?.slug)) throw new errors.ValidationError('Этот адрес зарезервирован для интерфейса Pages.');
+      },
+      beforeUpdate(event) {
+        if (['new', 'fonts'].includes(event.params.data?.slug)) throw new errors.ValidationError('Этот адрес зарезервирован для интерфейса Pages.');
+      },
+    });
     strapi.db.lifecycles.subscribe({
       models: publishModels,
       afterCreate: () => requestPublish(strapi),

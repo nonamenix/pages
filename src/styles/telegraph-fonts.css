@@ -1,0 +1,6 @@
+@font-face { font-family: CustomSansSerif; font-style: normal; font-weight: 300; font-display: swap; src: url(/fonts/kievit-300-normal.woff) format("woff"); }
+@font-face { font-family: CustomSansSerif; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/kievit-700-normal.woff) format("woff"); }
+@font-face { font-family: CustomSerif; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/charter-400-normal.woff) format("woff"); }
+@font-face { font-family: CustomSerif; font-style: italic; font-weight: 400; font-display: swap; src: url(/fonts/charter-400-italic.woff) format("woff"); }
+@font-face { font-family: CustomSerif; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/charter-700-normal.woff) format("woff"); }
+@font-face { font-family: CustomSerif; font-style: italic; font-weight: 700; font-display: swap; src: url(/fonts/charter-700-italic.woff) format("woff"); }

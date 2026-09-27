@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatPublishedOn, getArticles } from '../lib/articles.mjs';
 import { renderBlocks } from '../lib/blocks.mjs';
+import EditorShell from '../components/EditorShell.astro';
+import { articleVersion } from '../lib/editor-blocks.mjs';
 
 export async function getStaticPaths() {
   return (await getArticles()).map((article) => ({
@@ -25,18 +27,22 @@ const coverAlt = article.cover?.alternativeText || article.title;
   image={article.cover?.url}
   noindex={article.draft}
   ogType="article"
+  telegraph
 >
   {article.draft && <div class="draft-banner" role="status">Предпросмотр неопубликованного черновика</div>}
-  <article class="article-page shell--reading">
-    <header class="article-header">
-      <a class="back-link" href="/">← Все публикации</a>
+  <section class="telegraph-page" data-pages-root data-mode="article" data-slug={article.slug} data-preview={String(article.draft)} data-content-version={await articleVersion(article)}>
+    <nav class="page-nav" aria-label="Навигация">
+      <a href="/">← Pages</a>
+      {!article.draft && <a data-create href="/new" hidden>Новая страница</a>}
+      {!article.draft && <a data-login href="/admin/auth/login" target="_blank" rel="noopener">Войти</a>}
+    </nav>
+    <article data-read-view>
+    <header class="article-header telegraph-header">
       <h1>{article.title}</h1>
-      <p class="article-header__excerpt">{article.excerpt}</p>
-      <div class="article-meta">
+      <address class="telegraph-meta">
         {article.author && <span>{article.author}</span>}
         <time datetime={article.publishedOn}>{formatPublishedOn(article.publishedOn, article.language)}</time>
-        <span>{article.readingMinutes} мин чтения</span>
-      </div>
+      </address>
     </header>
 
     {article.cover && (
@@ -46,6 +52,11 @@ const coverAlt = article.cover?.alternativeText || article.title;
       </figure>
     )}
 
-    <div class="article-body" set:html={body} />
-  </article>
+    <div class="article-body telegraph-body" set:html={body} />
+    </article>
+    {!article.draft && <aside class="page-actions"><button class="telegraph-button" data-edit type="button" hidden>Редактировать</button><p data-session-status class="editor-status" role="status" hidden></p></aside>}
+    <div data-editor-host></div>
+    {!article.draft && <EditorShell />}
+  </section>
 </BaseLayout>
+<script>import '../scripts/pages.mjs';</script>

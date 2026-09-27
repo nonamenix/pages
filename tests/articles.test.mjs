@@ -31,4 +31,6 @@ test('rejects invalid envelope, duplicates and reserved routes', () => {
   assert.throws(() => parseEnvelope({}), /invalid envelope/);
   assert.throws(() => parseEnvelope(envelope([article(), article()])), /duplicate/);
   assert.throws(() => parseEnvelope(envelope([article({ slug: 'admin' })])), /Unsafe article slug/);
+  assert.throws(() => parseEnvelope(envelope([article({ slug: 'new' })])), /Unsafe article slug/);
+  assert.throws(() => parseEnvelope(envelope([article({ slug: 'fonts' })])), /Unsafe article slug/);
 });

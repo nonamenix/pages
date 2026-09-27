@@ -121,7 +121,7 @@ const walkFiles = async (root) => {
   return files;
 };
 
-const reservedSlugs = new Set(['admin', 'api', 'uploads', '__preview', '_health', 'mcp']);
+const reservedSlugs = new Set(['admin', 'api', 'uploads', '__preview', '_health', 'mcp', 'new', 'fonts']);
 const containsPrivateValue = (html) => (strapiUrl && html.includes(strapiUrl)) || (strapiApiToken && html.includes(strapiApiToken));
 const validateMetrikaVisibility = (html, expected, route) => {
   const markers = [
@@ -136,7 +136,7 @@ const validateMetrikaVisibility = (html, expected, route) => {
 const validateHtmlAssets = async (releaseRoot, html, route) => {
   const references = [...html.matchAll(/(?:src|href)="(\/[^"]+)"/g)].map((match) => match[1].split(/[?#]/, 1)[0]);
   for (const reference of references) {
-    if (reference.startsWith('/uploads/') || reference === '/' || reference.endsWith('/')) continue;
+    if (reference.startsWith('/uploads/') || reference.startsWith('/admin/') || reference === '/new' || reference === '/' || reference.endsWith('/')) continue;
     const filename = path.resolve(releaseRoot, reference.slice(1));
     if (!filename.startsWith(`${path.resolve(releaseRoot)}${path.sep}`)) throw new Error(`Unsafe asset reference in ${route}`);
     await fs.access(filename).catch(() => { throw new Error(`Missing asset ${reference} in ${route}`); });
@@ -144,7 +144,7 @@ const validateHtmlAssets = async (releaseRoot, html, route) => {
 };
 
 export const validateRelease = async (releaseRoot, articles) => {
-  const requiredFiles = ['index.html', '404.html', 'sitemap.xml', 'robots.txt', 'metrika.js'];
+  const requiredFiles = ['index.html', '404.html', 'new/index.html', 'sitemap.xml', 'robots.txt', 'metrika.js'];
   for (const filename of requiredFiles) await fs.access(path.join(releaseRoot, filename));
   const metrika = await fs.readFile(path.join(releaseRoot, 'metrika.js'), 'utf8');
   if (!metrika.includes("https://mc.yandex.ru/metrika/tag.js?id=111762995") || !metrika.includes("ym(111762995, 'init'")) {
@@ -153,7 +153,7 @@ export const validateRelease = async (releaseRoot, articles) => {
 
   const entries = await fs.readdir(releaseRoot, { withFileTypes: true });
   const generatedSlugs = entries
-    .filter((entry) => entry.isDirectory() && entry.name !== '_astro')
+    .filter((entry) => entry.isDirectory() && !['_astro', 'new', 'fonts'].includes(entry.name))
     .map((entry) => entry.name)
     .sort();
   const expectedSlugs = articles.map((article) => article.slug).sort();
@@ -163,6 +163,7 @@ export const validateRelease = async (releaseRoot, articles) => {
   }
 
   const sitemap = await fs.readFile(path.join(releaseRoot, 'sitemap.xml'), 'utf8');
+  if (sitemap.includes(`<loc>${siteUrl}/new/</loc>`) || sitemap.includes(`<loc>${siteUrl}/new</loc>`)) throw new Error('Editor must not appear in the sitemap');
   for (const article of articles) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(article.slug) || reservedSlugs.has(article.slug)) throw new Error(`Unsafe slug: ${article.slug}`);
     const html = await fs.readFile(path.join(releaseRoot, article.slug, 'index.html'), 'utf8');
@@ -178,10 +179,11 @@ export const validateRelease = async (releaseRoot, articles) => {
     await validateHtmlAssets(releaseRoot, html, `/${article.slug}/`);
   }
 
-  for (const filename of ['index.html', '404.html']) {
+  for (const filename of ['index.html', '404.html', 'new/index.html']) {
     const html = await fs.readFile(path.join(releaseRoot, filename), 'utf8');
     if (containsPrivateValue(html)) throw new Error(`Private data leaked into ${filename}`);
     validateMetrikaVisibility(html, filename === 'index.html', `/${filename}`);
+    if (filename === 'new/index.html' && !html.includes('noindex, nofollow, noarchive')) throw new Error('Editor must not be indexed');
     await validateHtmlAssets(releaseRoot, html, `/${filename}`);
   }
 

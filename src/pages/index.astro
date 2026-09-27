@@ -5,7 +5,7 @@ import { formatPublishedOn, getArticles } from '../lib/articles.mjs';
 const articles = await getArticles();
 ---
 <BaseLayout>
-  <section class="home-hero shell">
+  <section class="home-hero shell" data-pages-root data-mode="home">
     <p class="eyebrow">pages.live4.dev</p>
     <h1>Pages</h1>
     <p class="home-hero__lead">Статьи, заметки и длинные тексты.</p>
@@ -43,3 +43,4 @@ const articles = await getArticles();
     )}
   </section>
 </BaseLayout>
+<script>import '../scripts/pages.mjs';</script>

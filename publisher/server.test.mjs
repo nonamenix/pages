@@ -40,6 +40,9 @@ test('release validation accepts root article routes and rejects reserved routes
   const metrikaMarkup = '<script src="/metrika.js" defer></script><noscript><img src="https://mc.yandex.ru/watch/111762995" alt=""></noscript>';
   try {
     await fs.mkdir(path.join(root, 'test'));
+    await fs.mkdir(path.join(root, 'new'));
+    await fs.mkdir(path.join(root, 'fonts'));
+    await fs.writeFile(path.join(root, 'new/index.html'), '<html><head><meta name="robots" content="noindex, nofollow, noarchive"></head><body><h1>Новая страница</h1></body></html>');
     await fs.writeFile(path.join(root, 'favicon.svg'), '<svg/>');
     await fs.writeFile(path.join(root, 'metrika.js'), "https://mc.yandex.ru/metrika/tag.js?id=111762995; ym(111762995, 'init');");
     await fs.writeFile(path.join(root, 'robots.txt'), 'User-agent: *');
@@ -48,7 +51,23 @@ test('release validation accepts root article routes and rejects reserved routes
     await fs.writeFile(path.join(root, '404.html'), '<html><head><link rel="icon" href="/favicon.svg"></head><body><h1>404</h1></body></html>');
     await fs.writeFile(path.join(root, 'test', 'index.html'), `<html><head><link rel="canonical" href="https://pages.live4.dev/test/"><link rel="icon" href="/favicon.svg">${metrikaMarkup}</head><body><h1>Test</h1></body></html>`);
     const metrics = await validateRelease(root, [article]);
-    assert.equal(metrics.routeCount, 3);
+    assert.equal(metrics.routeCount, 4);
+
+    await fs.writeFile(path.join(root, 'new/index.html'), `<html><head><meta name="robots" content="noindex, nofollow, noarchive"></head><body>${metrikaMarkup}</body></html>`);
+    await assert.rejects(() => validateRelease(root, [article]), /Metrika/);
+    await fs.writeFile(path.join(root, 'new/index.html'), '<html><head><meta name="robots" content="noindex, nofollow, noarchive"></head><body>Editor</body></html>');
+    await fs.writeFile(path.join(root, 'sitemap.xml'), '<urlset><url><loc>https://pages.live4.dev/test/</loc></url><url><loc>https://pages.live4.dev/new/</loc></url></urlset>');
+    await assert.rejects(() => validateRelease(root, [article]), /editor|new|sitemap/i);
+    await fs.writeFile(path.join(root, 'sitemap.xml'), '<urlset><url><loc>https://pages.live4.dev/test/</loc></url></urlset>');
+
+    await fs.rename(path.join(root, 'test'), path.join(root, 'new-story'));
+    const renamed = (await fs.readFile(path.join(root, 'new-story/index.html'), 'utf8')).replaceAll('/test/', '/new-story/');
+    await fs.writeFile(path.join(root, 'new-story/index.html'), renamed);
+    await fs.writeFile(path.join(root, 'sitemap.xml'), '<urlset><url><loc>https://pages.live4.dev/new-story/</loc></url></urlset>');
+    await validateRelease(root, [{ slug: 'new-story', draft: false }]);
+    await fs.rename(path.join(root, 'new-story'), path.join(root, 'test'));
+    await fs.writeFile(path.join(root, 'test/index.html'), renamed.replaceAll('/new-story/', '/test/'));
+    await fs.writeFile(path.join(root, 'sitemap.xml'), '<urlset><url><loc>https://pages.live4.dev/test/</loc></url></urlset>');
 
     await fs.rename(path.join(root, 'test'), path.join(root, 'admin'));
     await assert.rejects(() => validateRelease(root, [{ slug: 'admin', draft: false }]), /Unsafe slug/);
