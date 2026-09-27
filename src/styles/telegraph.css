@@ -35,6 +35,7 @@
 .home-empty { padding-top: 21px; }
 .home-empty p { margin: 0 0 9px; font: 400 18px/1.58 var(--serif); }
 .home-empty .home-empty-hint { font: 300 15px/22px var(--sans); color: var(--ink-soft); }
+.home-skill-link { margin: 30px 21px 0; font: 300 15px/22px var(--sans); color: var(--ink-soft); }
 .telegraph-header.article-header { margin: 0 0 20px; }
 .telegraph-header h1, .new-page-placeholder h1, .editor-title {
   font: 700 32px/34px var(--sans);

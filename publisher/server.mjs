@@ -187,6 +187,25 @@ export const validateRelease = async (releaseRoot, articles) => {
     await validateHtmlAssets(releaseRoot, html, `/${filename}`);
   }
 
+  if (entries.some((entry) => entry.name === 'pages-site.html')) {
+    const html = await fs.readFile(path.join(releaseRoot, 'pages-site.html'), 'utf8');
+    if (containsPrivateValue(html)) throw new Error('Private data leaked into skill installation page');
+    if ((html.match(/<h1\b/gi) || []).length !== 1 || !html.includes(`<link rel="canonical" href="${siteUrl}/pages-site.html">`)) {
+      throw new Error('Invalid skill installation page');
+    }
+    validateMetrikaVisibility(html, true, '/pages-site.html');
+    await validateHtmlAssets(releaseRoot, html, '/pages-site.html');
+    const manifest = JSON.parse(await fs.readFile(path.join(releaseRoot, 'pages-site-manifest.json'), 'utf8'));
+    if (!/^pages-site-\d+\.\d+\.\d+\.zip$/.test(manifest.archive) || !/^[a-f0-9]{64}$/.test(manifest.sha256)) {
+      throw new Error('Invalid skill package manifest');
+    }
+    const archive = await fs.readFile(path.join(releaseRoot, manifest.archive));
+    if (crypto.createHash('sha256').update(archive).digest('hex') !== manifest.sha256 || archive.length !== manifest.bytes) {
+      throw new Error('Skill package checksum mismatch');
+    }
+    if (!sitemap.includes(`<loc>${siteUrl}/pages-site.html</loc>`)) throw new Error('Skill page missing from sitemap');
+  }
+
   const files = await walkFiles(releaseRoot);
   return {
     routeCount: files.filter((filename) => filename.endsWith('.html')).length,

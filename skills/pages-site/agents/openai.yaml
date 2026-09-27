@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pages"
+  short_description: "Manage Pages articles and publish Markdown files"
+  default_prompt: "Use $pages-site to publish Markdown files or manage articles on pages.live4.dev via authenticated HTTPS, preserving source formatting and verifying the resulting public pages."
