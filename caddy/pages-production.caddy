@@ -23,8 +23,9 @@ pages.live4.dev {
     header {
       Cache-Control "no-store"
       X-Robots-Tag "noindex, nofollow, noarchive"
-      >X-Frame-Options "SAMEORIGIN"
-      >Content-Security-Policy "default-src 'self'; script-src 'self'; connect-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'"
+      X-Frame-Options "SAMEORIGIN"
+      Content-Security-Policy "default-src 'self'; script-src 'self'; connect-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'"
+      defer
     }
     reverse_proxy 127.0.0.1:4351
   }
@@ -89,7 +90,10 @@ pages.live4.dev {
   }
 
   @unframed not path /admin/pages-session.html
-  header @unframed >X-Frame-Options "DENY"
+  header @unframed {
+    X-Frame-Options "DENY"
+    defer
+  }
 
   header {
     Strict-Transport-Security "max-age=31536000; includeSubDomains"

@@ -28,8 +28,13 @@ done
 curl -fsS https://pages.live4.dev/new | grep -q 'noindex'
 test "$(curl -fsS https://pages.live4.dev/new | grep -c 'src="/metrika.js"' || true)" = 0
 curl -fsS https://pages.live4.dev/admin/pages-session.html | grep -q '/admin/pages-session-'
-curl -fsSI https://pages.live4.dev/admin/pages-session.html | grep -qi '^x-frame-options: SAMEORIGIN'
-curl -fsSI https://pages.live4.dev/admin/auth/login | grep -qi '^x-frame-options: DENY'
+bridge_headers=$(curl -fsSI https://pages.live4.dev/admin/pages-session.html | tr -d '\r')
+test "$(printf '%s\n' "$bridge_headers" | grep -ic '^x-frame-options:')" = 1
+printf '%s\n' "$bridge_headers" | grep -qix 'x-frame-options: SAMEORIGIN'
+printf '%s\n' "$bridge_headers" | grep -qixF "content-security-policy: default-src 'self'; script-src 'self'; connect-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'self'; form-action 'none'"
+admin_headers=$(curl -fsSI https://pages.live4.dev/admin/auth/login | tr -d '\r')
+test "$(printf '%s\n' "$admin_headers" | grep -ic '^x-frame-options:')" = 1
+printf '%s\n' "$admin_headers" | grep -qix 'x-frame-options: DENY'
 code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 \
   -H 'Authorization: Bearer invalid-verification-token' https://pages.live4.dev/api/articles || true)
 case "$code" in
