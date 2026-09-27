@@ -18,12 +18,18 @@ jq -e '.schemaVersion == 1 and .siteId == "pages-live4dev" and .articleCount >= 
 caddy validate --config /etc/caddy/Caddyfile >/dev/null
 curl -fsS http://127.0.0.1:4352/health | jq -e '.ok == true and .siteId == "pages-live4dev"' >/dev/null
 test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:4351/_health)" = 204
-for path in / /404-does-not-exist /api/articles /_health /mcp; do
+for path in / /404-does-not-exist /api/articles /api/articles/verification-document-id /api/articles-other /api/publisher/site /_health /mcp; do
   code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 "https://pages.live4.dev$path" || true)
   case "$path:$code" in
-    /:200|/404-does-not-exist:404|/api/articles:404|/_health:404|/mcp:404) ;;
+    /:200|/404-does-not-exist:404|/api/articles:401|/api/articles/verification-document-id:401|/api/articles-other:404|/api/publisher/site:404|/_health:404|/mcp:404) ;;
     *) printf '%s returned unexpected HTTP %s.\n' "$path" "$code" >&2; exit 1 ;;
   esac
 done
+code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 10 \
+  -H 'Authorization: Bearer invalid-verification-token' https://pages.live4.dev/api/articles || true)
+case "$code" in
+  401|403) ;;
+  *) printf 'Invalid API token returned unexpected HTTP %s.\n' "$code" >&2; exit 1 ;;
+esac
 printf 'pages.live4.dev verified: release=%s articles=%s.\n' "$(basename "$current")" "$(jq -r .articleCount "$current/release.json")"
 REMOTE

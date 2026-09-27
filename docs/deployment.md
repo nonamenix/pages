@@ -10,8 +10,11 @@
 - PostgreSQL: database `pages_live4dev`, role `pages_live4dev_app`, private network `strapi-database`;
 - releases: `/srv/pages-live4dev/current` plus three previous releases;
 - backups: `/var/backups/pages-live4dev`, retention 14 days.
+- authenticated article API: `https://pages.live4.dev/api/articles` and `/api/articles/<documentId>`; Caddy requires a Bearer header and Strapi validates the API token and article permissions. Missing Bearer headers return `401`; anonymous Strapi article permissions remain disabled. Other `/api/*`, including `/api/publisher/site`, remain `404`.
 
 Production deployment must not modify `sites.live4.dev` or restart a neighboring stack.
+
+For a Caddy-only article API routing update, record the current site file checksum, active release and image IDs, and save the site file plus the main Caddyfile in a root-only backup directory before installation. Validate the candidate with the installed Caddy binary, install only the Pages site file and the matching verification script, validate the complete `/etc/caddy/Caddyfile`, then reload Caddy. On validation, reload or verification failure, restore the saved Pages file, validate the full configuration and reload it. A routing-only update does not require rebuilding or restarting Strapi or the publisher, or changing the database or token permissions.
 
 ## 1. Read-only preflight
 
