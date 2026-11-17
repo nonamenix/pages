@@ -32,16 +32,16 @@ const coverAlt = article.cover?.alternativeText || article.title;
   {article.draft && <div class="draft-banner" role="status">Предпросмотр неопубликованного черновика</div>}
   <section class="telegraph-page" data-pages-root data-mode="article" data-slug={article.slug} data-preview={String(article.draft)} data-content-version={await articleVersion(article)}>
     <nav class="page-nav" aria-label="Навигация">
-      <a href="/">← Pages</a>
-      {!article.draft && <a data-create href="/new" hidden>Новая страница</a>}
-      {!article.draft && <a data-login href="/admin/auth/login" target="_blank" rel="noopener">Войти</a>}
+      <a href="/">← Все статьи</a>
     </nav>
     <article data-read-view>
     <header class="article-header telegraph-header">
       <h1>{article.title}</h1>
+      <p class="article-deck">{article.excerpt}</p>
       <address class="telegraph-meta">
         {article.author && <span>{article.author}</span>}
         <time datetime={article.publishedOn}>{formatPublishedOn(article.publishedOn, article.language)}</time>
+        <span>{article.readingMinutes} мин чтения</span>
       </address>
     </header>
 

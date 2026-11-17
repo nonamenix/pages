@@ -1,8 +1,8 @@
-# Telegraph typography
+# Typography sources
 
-Webfonts extracted from the embedded font declarations in https://telegra.ph/css/core.min.css?47 on 2026-09-27, as requested for the Pages redesign.
+Pages uses Golos Text Regular and SemiBold, matching the visual system of
+`live4.dev`. Golos Text is distributed under the SIL Open Font License 1.1;
+the license text is included as `Golos-OFL.txt`.
 
-- CustomSansSerif: Kievit Pro Regular and Bold (FontShop International).
-- CustomSerif: Charter ITC Pro Regular, Italic, Bold and Bold Italic.
-
-Original family aliases and weights are retained. The files are font assets, not application code.
+The former Telegraph-inspired Kievit and Charter files remain in this folder
+only so older releases can be reproduced. They are no longer loaded by Pages.

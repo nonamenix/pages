@@ -1,6 +1,15 @@
-@font-face { font-family: CustomSansSerif; font-style: normal; font-weight: 300; font-display: swap; src: url(/fonts/kievit-300-normal.woff) format("woff"); }
-@font-face { font-family: CustomSansSerif; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/kievit-700-normal.woff) format("woff"); }
-@font-face { font-family: CustomSerif; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/charter-400-normal.woff) format("woff"); }
-@font-face { font-family: CustomSerif; font-style: italic; font-weight: 400; font-display: swap; src: url(/fonts/charter-400-italic.woff) format("woff"); }
-@font-face { font-family: CustomSerif; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/charter-700-normal.woff) format("woff"); }
-@font-face { font-family: CustomSerif; font-style: italic; font-weight: 700; font-display: swap; src: url(/fonts/charter-700-italic.woff) format("woff"); }
+@font-face {
+  font-family: 'Golos Text';
+  src: url('/fonts/golos-regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Golos Text';
+  src: url('/fonts/golos-semibold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}

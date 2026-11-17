@@ -8,7 +8,7 @@ export const GET: APIRoute = () => new Response(`<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Установите скилл Pages для Codex: публикация статей и Markdown-файлов на pages.live4.dev.">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#f7faf8">
   <title>Pages для Codex — Pages</title>
   <link rel="canonical" href="https://pages.live4.dev/pages-site.html">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -24,7 +24,13 @@ export const GET: APIRoute = () => new Response(`<!doctype html>
 <body>
   <noscript><div class="metrika-noscript"><img src="https://mc.yandex.ru/watch/111762995" width="1" height="1" alt=""></div></noscript>
   <main id="content">
-    <nav aria-label="Навигация"><a href="/">pages.live4.dev</a><a href="/pages-site.SKILL.md">SKILL.md</a></nav>
+    <nav aria-label="Навигация">
+      <a class="brand" href="/" aria-label="Pages — на главную">
+        <svg viewBox="0 0 32 28" fill="none" aria-hidden="true"><path d="M2 10h6l5-5h6l5 5h6M2 17h6l5-5h6l5 5h6M2 24h6l5-5h6l5 5h6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <strong>live4.dev</strong><span>/ Pages</span>
+      </a>
+      <a href="/pages-site.SKILL.md">SKILL.md</a>
+    </nav>
     <header>
       <h1>Pages для Codex</h1>
       <p class="meta">Скилл pages-site · Версия ${manifest.version}</p>

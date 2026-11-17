@@ -47,7 +47,7 @@ export const mountEditor = async (root, initialSession, request) => {
   author.value = record?.author || (!record ? session.name : '');
 
   const showStatus = (message, error = false) => { status.textContent = message; status.classList.toggle('is-error', error); };
-  const resizeTitle = () => { title.style.height = 'auto'; title.style.height = `${title.scrollHeight}px`; };
+  const resizeTitle = () => { title.style.height = 'auto'; title.style.height = `${title.scrollHeight + 8}px`; };
   const updateControls = () => {
     const writable = session && (record ? session.canUpdate : session.canCreate);
     save.disabled = busy || !writable;
@@ -122,11 +122,13 @@ export const mountEditor = async (root, initialSession, request) => {
   const oldActions = root.querySelector(':scope > .page-actions');
   if (oldActions) oldActions.hidden = true;
   resizeTitle();
+  document.fonts?.ready.then(resizeTitle);
   updateControls();
   title.addEventListener('input', () => { resizeTitle(); markDirty(); });
   author.addEventListener('input', markDirty);
+  const handleResize = () => { resizeTitle(); positionTools(); };
   window.addEventListener('scroll', positionTools, { passive: true });
-  window.addEventListener('resize', positionTools);
+  window.addEventListener('resize', handleResize);
   const beforeUnload = (event) => { if (dirty || busy) { event.preventDefault(); event.returnValue = ''; } };
   window.addEventListener('beforeunload', beforeUnload);
 
@@ -257,7 +259,7 @@ export const mountEditor = async (root, initialSession, request) => {
     editor.destroy();
     window.removeEventListener('beforeunload', beforeUnload);
     window.removeEventListener('scroll', positionTools);
-    window.removeEventListener('resize', positionTools);
+    window.removeEventListener('resize', handleResize);
     host.replaceChildren();
     readView.hidden = false;
     if (oldActions) oldActions.hidden = false;

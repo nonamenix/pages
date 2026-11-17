@@ -7,14 +7,12 @@ const articles = await getArticles();
 ---
 <BaseLayout telegraph>
   <section class="telegraph-page home-page" data-pages-root data-mode="home">
-    <nav class="page-nav home-nav" aria-label="Управление страницами">
-      <a href="/" aria-label="Pages — на главную">pages.live4.dev</a>
-      <a class="telegraph-button" href="/new" data-create hidden>Новая страница</a>
-      <a href="/admin/auth/login" data-login target="_blank" rel="noopener">Войти</a>
-    </nav>
     <header class="telegraph-header home-intro">
-      <h1>Pages</h1>
-      <p class="home-lead">Статьи, заметки и длинные тексты.</p>
+      <div>
+        <p class="home-kicker">Публичные страницы</p>
+        <h1>Pages</h1>
+      </div>
+      <p class="home-lead">Статьи, заметки и длинные тексты — в спокойном формате для внимательного чтения.</p>
     </header>
 
     <section class="home-publications" aria-labelledby="latest-title">
@@ -33,14 +31,17 @@ const articles = await getArticles();
             <li>
               <article class="home-article">
                 <a href={`/${article.slug}/`} aria-label={`Читать: ${article.title}`}>
-                  <h3>{article.title}</h3>
+                  <div class="home-article-copy">
+                    <h3>{article.title}</h3>
+                    <p>{article.excerpt}</p>
+                  </div>
                   <div class="home-article-meta">
                     {article.author && <span>{article.author}</span>}
                     <time datetime={article.publishedOn}>{formatPublishedOn(article.publishedOn, article.language)}</time>
                     <span>{article.readingMinutes} мин</span>
                     {article.draft && <span>Черновик</span>}
                   </div>
-                  <p>{article.excerpt}</p>
+                  <span class="home-article-arrow" aria-hidden="true">↗</span>
                 </a>
               </article>
             </li>

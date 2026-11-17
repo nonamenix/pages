@@ -226,6 +226,7 @@ test('authenticated Pages editing and publication', { timeout: 180_000 }, async 
       assert.match(await (await fetch(`${origin}/editor-fixture/`)).text(), /Опубликованный текст/);
       await page.setViewportSize({ width: 390, height: 844 });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+      assert.equal(await shell.locator('[data-title]').evaluate((element) => element.clientHeight >= element.scrollHeight), true);
       await page.screenshot({ path: path.join(workspace, 'editor-mobile.png'), fullPage: true });
       await shell.locator('[data-publish]').click();
       await shell.locator('[data-public-link]').waitFor();
